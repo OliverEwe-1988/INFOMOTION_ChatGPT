@@ -38,14 +38,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.action1_Reihe.triggered.connect(self.zeigeFirstRowChatGPTFenster)
         self.ui.actionTabelle.triggered.connect(self.zeigeTableChatGPTFenster)
 
-        # Abfrage bei 1. Aufruf der Mainclass nach API ja/nein... Checkbox
-        # if self.ui.checkAPIKey.isChecked():
-        #     openai.api_key = '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'  # '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'
-        #     print(openai.api_key)
-        # else:
-        #     openai.api_key = self.ui.textEdit_2.toPlainText()
-        #     print(openai.api_key)
-        # self.ui.checkAPIKey.clicked.connect(self.getApiKey)
+        self.ui.checkAPIKey.clicked.connect(self.getApiKey)
 
         self.ui.actionLaden.triggered.connect(self.file_laden_dialog)
         self.ui.actionDatei_l_schen.triggered.connect(self.file_delete_dialog)
@@ -115,29 +108,23 @@ class direktChatGPTFenster(QtWidgets.QMainWindow):
 
     def process_input(self):
 
-        # input_text = self.ui.direktChatInput.toPlainText()
+        input_text = self.ui.direktChatInput.toPlainText()
 
         # Hier kannst du deinen Code zum Senden der Eingabe an ChatGPT und zum Empfang
         try:
-            # print("1")
-            # response = openai.Completion.create(
-            #     engine="text-davinci-003",
-            #     prompt=input_text,
-            #     max_tokens=250,  # Anzahl der Tokens in der Antwort
-            #     temperature=0.7,  # Steuerung der Antwortvarianz
-            #     n=1,  # Anzahl der Antworten, die zurückgegeben werden sollen
-            #     stop=None,  # Hier kannst du eine benutzerdefinierte Stop-Bedingung angebe
-            # )
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=input_text,
+                max_tokens=250,  # Anzahl der Tokens in der Antwort
+                temperature=0.7,  # Steuerung der Antwortvarianz
+                n=1,  # Anzahl der Antworten, die zurückgegeben werden sollen
+                stop=None,  # Hier kannst du eine benutzerdefinierte Stop-Bedingung angebe
+            )
 
-            # output = response['choices'][0]['text'].strip()
-            # print(output)
-            out = "was ist eine Pizza?"
+            output = response['choices'][0]['text'].strip()
 
-            test = "Eine Pizza ist ein vor dem Backen würzig belegtes Fladenbrot aus einfachem Hefeteig aus der italienischen Küche. Die heutige international verbreitetes Variante mit Tomatensauce und Käse als Basis stammt vermutlich aus Neapel."
-            token = len(out) + len(test)  #len(input_text) + len(output)
-            # self.ui.direktChatOutput.setPlainText(response['choices'][0]['text'].strip())
-            self.ui.direktChatInput.setPlainText(out)
-            self.ui.direktChatOutput.setPlainText(test)
+            token = len(output) + len(input_text)  #len(input_text) + len(output)
+            self.ui.direktChatOutput.setPlainText(output)
             self.ui.direktChatGPTToken.setText(str(token))
 
         except:
@@ -183,44 +170,12 @@ class CodeChatGPTFenster(QtWidgets.QMainWindow):
                 stop=None,  # Hier kannst du eine benutzerdefinierte Stop-Bedingung angebe
             )
 
-            response = str(''
-            'import pandas as pd'
-
-            '# Pfad zur CSV-Datei'
-            'csv_datei_pfad = r''F:\Entwicklung\InfomotionChatGPT\train.csv'
-
-            '# CSV-Datei mit pandas einlesen'
-            'data = pd.read_csv(csv_datei_pfad)'
-
-            '# Annahme, dass die Regionen in einer Spalte namens Region liegen'
-            '# Wenn der Spaltenname anders ist, ersetzen Sie Region durch den tatsächlichen Spaltennamen'
-            'regionen = data["Region"].unique()'
-
-            '# Anzahl der Regionen ermitteln'
-            'anzahl_regionen = len(regionen)'
-
-            'print(f"Es gibt {anzahl_regionen} Regionen in der CSV-Datei.")')
 
             code =response['choices'][0]['text'].strip()
             output=code
             token = len(input_text) + len(output)
 
             self.ui.CoderChatGPTToken.setText(str(token))
-            # test = "Es gibt 4 Regionen."
-            # code = "import pandas as pd \n" \
-            #        "\n" \
-            #        "# Pfad zur CSV-Datei \n" \
-            #        "csv_datei_pfad = r'F:\Entwicklung\InfomotionChatGPT\_train.csv \n" \
-            #        "\n" \
-            #        "# Annahme, dass die Regionen in einer Spalte namens 'Region' liegen \"\n" \
-            #        "regionen = data['Region'].unique() \n" \
-            #        "\n" \
-            #        "# Anzahl der Regionen ermitteln \n" \
-            #        "anzahl_regionen = len(regionen) \n" \
-            #        "\n" \
-            #        "print(f"'Es gibt {anzahl_regionen} Regionen in der CSV-Datei.'")"
-
-
             self.ui.CodeChatGPTOutput.setPlainText(code)
             self.ui.output = output
 
@@ -311,30 +266,28 @@ class TableChatGPTFenster(QtWidgets.QMainWindow):
 
         self.ui.btnTable.clicked.connect(self.process_input)
 
-        # csv_filepath = main_window.pfad  # Replace with your CSV file path
 
     def process_input(self):
 
-        # csv = pd.read_csv(main_window.pfad)
-        # csv=csv.head()  #Sicherheitsfeature um kosten zu sparen
-        # json = csv.to_json()
+        csv = pd.read_csv(main_window.pfad)
+        csv=csv.head()  #Sicherheitsfeature um kosten zu sparen
+        json = csv.to_json()
 
-        # input_text = "beantworte die Frage" + self.ui.tableChatGPTInput.toPlainText() + "aus folgende Datei:" + json
+        input_text = "beantworte die Frage" + self.ui.tableChatGPTInput.toPlainText() + "aus folgende Datei:" + json
 
         try:
-        #     response = openai.Completion.create(
-        #         engine="text-davinci-003",
-        #         prompt=input_text,
-        #         max_tokens=500,  # Anzahl der Tokens in der Antwort
-        #         temperature=0.7,  # Steuerung der Antwortvarianz
-        #         n=1,  # Anzahl der Antworten, die zurückgegeben werden sollen
-        #         stop=None,  # Hier kannst du eine benutzerdefinierte Stop-Bedingung angebe
-        #     )
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=input_text,
+                max_tokens=500,  # Anzahl der Tokens in der Antwort
+                temperature=0.7,  # Steuerung der Antwortvarianz
+                n=1,  # Anzahl der Antworten, die zurückgegeben werden sollen
+                stop=None,  # Hier kannst du eine benutzerdefinierte Stop-Bedingung angebe
+            )
 
-            test = "Es gibt 4 Regionen. (West, South, East, Central)"
-            # output = response['choices'][0]['text'].strip()
-            token = 26548 #len(input_text) + len(output)
-            self.ui.tableChatGPTOutput.setPlainText(test)
+
+            output = response['choices'][0]['text'].strip()
+            token = len(input_text) + len(output)
             self.ui.TableChatGPTToken.setText(str(token))
         except:
             self.ui.tableChatGPTOutput.setStyleSheet("color: red")
@@ -366,7 +319,6 @@ class FirstRowChatGPTFenster(QtWidgets.QMainWindow):
         else:
             openai.api_key = main_window.ui.textEdit_2.toPlainText()
 
-        # openai.api_key = main_window.ui.textEdit_2.toPlainText()
         self.output = ""
         self.code=""
         self.ui.setupUi(self)
@@ -380,54 +332,29 @@ class FirstRowChatGPTFenster(QtWidgets.QMainWindow):
 
     def process_input(self):
 
-        # first_row = pd.read_csv(main_window.pfad).columns.tolist()
+        first_row = pd.read_csv(main_window.pfad).columns.tolist()
 
-        # print("Erste Reihe: ", first_row)
-        # input_text = "schreib python Code um aus einer Tabelle folgende Frage zu lesen."+self.ui.firstRowChatGPTInput.toPlainText() + " aus der Tabelle mit dem Pfad: "+main_window.pfad+" unter verwendung von folgenden Spaltennamen:" +str(first_row)
+
+        input_text = "schreib python Code um aus einer Tabelle folgende Frage zu lesen."+self.ui.firstRowChatGPTInput.toPlainText() + " aus der Tabelle mit dem Pfad: "+main_window.pfad+" unter verwendung von folgenden Spaltennamen:" +str(first_row)
 
 
         # Hier kannst du deinen Code zum Senden der Eingabe an ChatGPT und zum Empfang
         try:
-            # self.ui.firstRowChatGPTOutput.setStyleSheet("color: black")
-            # response = openai.Completion.create(
-            #     engine="text-davinci-003",
-            #     prompt=input_text,
-            #     max_tokens=250,  # Anzahl der Tokens in der Antwort
-            #     temperature=0.7,  # Steuerung der Antwortvarianz
-            #     n=1,  # Anzahl der Antworten, die zurückgegeben werden sollen
-            #     stop=None,  # Hier kannst du eine benutzerdefinierte Stop-Bedingung angebe
-            # )
+            self.ui.firstRowChatGPTOutput.setStyleSheet("color: black")
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=input_text,
+                max_tokens=250,  # Anzahl der Tokens in der Antwort
+                temperature=0.7,  # Steuerung der Antwortvarianz
+                n=1,  # Anzahl der Antworten, die zurückgegeben werden sollen
+                stop=None,  # Hier kannst du eine benutzerdefinierte Stop-Bedingung angebe
+            )
 
-            # code = response['choices'][0]['text'].strip()
-            code ="import pandas as pd \n" \
-                  "\n" \
-                  "# Pfad zur CSV-Datei \n" \
-                  "csv_datei_pfad = r'F:\Entwicklung\InfomotionChatGPT\_train.csv' \n" \
-                  "\n" \
-                  "# CSV-Datei mit pandas einlesen und nur die benötigten Spalten auswählen \n" \
-                  "spalten = ['Row ID', 'Order ID', 'Order Date', 'Ship Date', 'Ship Mode', 'Customer ID', \n" \
-                  "'Customer Name', 'Segment', 'Country', 'City', 'State', 'Postal Code', 'Region'] \n" \
-                  "data = pd.read_csv(csv_datei_pfad, usecols=spalten) \n" \
-                  "\n" \
-                  "# Anzahl der eindeutigen Regionen in der Spalte 'Region' ermitteln \n" \
-                  "anzahl_regionen = data['Region'].nunique() \n" \
-                  "\n" \
-                  "print(f'Es gibt {anzahl_regionen} Regionen.')"
-
-
-            # csv_datei_pfad = r'F:\Entwicklung\InfomotionChatGPT\train.csv'
-
-            # CSV-Datei mit pandas einlesen und nur die benötigten Spalten auswählen
-
-
-
-
-            # Anzahl der eindeutigen Regionen in der Spalte 'Region' ermitteln
-
+            code = response['choices'][0]['text'].strip()
 
 
             output=code
-            token = 564 #len(input_text)+len(output)
+            token = len(input_text)+len(output)
 
             if "#" or "width" or "r" in output:
                 self.ui.btnFirstRowAusfuehren.show()
@@ -436,7 +363,7 @@ class FirstRowChatGPTFenster(QtWidgets.QMainWindow):
 
             self.ui.firstRowChatGPTOutput.setPlainText(output)
             self.ui.firstRowToken.setText(str(token))
-            # self.ui.output = output
+            self.ui.output = output
 
             if self.ui.checkFirstRowShowCode.isChecked():
                 self.ui.firstRowChatGPTOutput.setPlainText(output)
